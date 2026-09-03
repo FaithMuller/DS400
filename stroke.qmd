@@ -1,0 +1,80 @@
+---
+title: "conditional_probabilities_workshop"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+library(tidyverse)
+library(here)
+
+```
+
+```{r}
+stroke_data <- read_csv(here("data/healthcare-dataset-stroke-data.csv"))
+```
+
+```{r}
+ggplot(data = stroke_data, aes(x = gender, fill = factor(stroke))) +
+  geom_bar(position = "dodge")
+```
+
+```{r}
+ggplot(data = stroke_data, aes(x = factor(stroke), fill = factor(stroke),
+```
+
+```{r}
+stroke_data %>% 
+  count(stroke) %>% 
+  mutate(percent = n / sum(n))
+```
+
+```{r}
+probability_disease <- stroke_data %>% 
+  count(stroke) %>% 
+  mutate(percent = n / sum(n)) %>% 
+  filter(stroke == 1) %>% 
+  pull(percent)
+```
+
+```{r}
+stroke_data %>% 
+  count(stroke, hypertension) %>% 
+  group_by(stroke) %>% 
+  mutate(percent = n / sum(n))
+```
+
+```{r}
+probability_positive_result_given_disease <- stroke_data %>% 
+  count(stroke, hypertension) %>% 
+  group_by(stroke) %>% 
+  mutate(percent = n / sum(n)) %>% 
+  filter(stroke == 1, hypertension == "positive") %>% 
+  pull(percent)
+```
+
+```{r}
+stroke_data %>% 
+  count(hypertension) %>% 
+  mutate(percent = n / sum(n))
+```
+
+```{r}
+probability_positive_test_result <- stroke_data %>% 
+  count(hypertension) %>% 
+  mutate(percent = n / sum(n)) %>% 
+  filter(hypertension == "positive") %>% 
+  pull(percent)
+```
+
+```{r}
+(probability_positive_result_given_disease * probability_disease) / probability_positive_test_result
+```
