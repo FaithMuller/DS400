@@ -1,0 +1,71 @@
+---
+title: "penguins_linear_regression.qmd"
+format: html
+editor: visual
+---
+
+# Challenge: Modeling Penguin Flipper Length with Bayesian Regression
+
+You're going to build a Bayesian Normal regression model predicting flipper length (`flipper_length_mm`) from bill length (`bill_length_mm`), using the `penguins_bayes` dataset. Work through each section in order, and answer every numbered question directly in your qmd, right under the code that produces it.
+
+## 1. Load the data
+
+```{r}
+library(tidyverse)
+library(bayesrules)
+library(rstanarm)
+
+data <- bayesrules::penguins_bayes
+```
+
+## 2. Look before you model
+
+```{r}
+view(data)
+```
+
+```{r}
+ggplot(data = data, aes(x = flipper_length_mm)) +
+  geom_histogram()
+```
+
+### What does the histogram say?
+
+- 
+
+```{r}
+ggplot(data = data, aes(x = bill_length_mm, y = flipper_length_mm)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+### What does the scatterplot say?
+
+- 
+
+## 3. Translate these three beliefs into priors
+
+Read each statement carefully — you need to convert plain language into specific numbers.
+
+> **Typical flipper length.** Across all three species in this dataset, a reasonable guess for average flipper length is around 200mm — with a plausible range of roughly 180mm to 220mm.
+
+> **The bill-to-flipper relationship.** Bill length and flipper length are both rough proxies for body size, so for every 1mm increase in bill length, flipper length typically increases by around 3.5mm — with a plausible range of roughly 1.5mm to 5.5mm.
+
+> **Leftover variability.** Even penguins with identical bill lengths won't have identical flippers. A reasonable guess for the typical leftover spread is around 12.5mm.
+
+**How to convert each one:**
+
+- For a Normal prior, "around X, plausibly between A and B" means: X is your mean, and the width from A to B is your **95% range**, which equals **mean ± 1.96 × SD**. Solve for SD.
+- For sigma's Exponential prior, there's no range to convert — just a single target mean. Recall **E(sigma) = 1/rate**, so `rate = 1/E(sigma)`.
+
+Write your five numbers as plain variables before moving on:
+
+```{r}
+m0 <- ___   # centered intercept mean
+s0 <- ___   # centered intercept SD
+m1 <- ___   # slope mean
+s1 <- ___   # slope SD
+l  <- ___   # sigma's exponential rate
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
