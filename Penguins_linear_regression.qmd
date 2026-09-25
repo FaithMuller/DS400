@@ -14,6 +14,8 @@ You're going to build a Bayesian Normal regression model predicting flipper leng
 library(tidyverse)
 library(bayesrules)
 library(rstanarm)
+library(plotly)
+library(report)
 
 data <- bayesrules::penguins_bayes
 ```
@@ -25,23 +27,28 @@ view(data)
 ```
 
 ```{r}
-ggplot(data = data, aes(x = flipper_length_mm)) +
-  geom_histogram()
+graph_1 <- ggplot(data = data, aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram() +
+  theme_bw()
+
+ggplotly(graph_1)
 ```
 
 ### What does the histogram say?
 
-- 
+- The graph shows the different species and how many has the same flipper length.
 
 ```{r}
-ggplot(data = data, aes(x = bill_length_mm, y = flipper_length_mm)) +
+graph_2 <- ggplot(data = data, aes(x = bill_length_mm, y = flipper_length_mm)) +
   geom_point() +
   geom_smooth(method = "lm")
+
+ggplotly(graph_2)
 ```
 
 ### What does the scatterplot say?
 
-- 
+- This graph shows that both x and y values are increasing and how strong their connects are.
 
 ## 3. Translate these three beliefs into priors
 
@@ -61,11 +68,46 @@ Read each statement carefully — you need to convert plain language into specif
 Write your five numbers as plain variables before moving on:
 
 ```{r}
-m0 <- ___   # centered intercept mean
-s0 <- ___   # centered intercept SD
-m1 <- ___   # slope mean
-s1 <- ___   # slope SD
-l  <- ___   # sigma's exponential rate
+m0 <- 200   # centered intercept mean
+s0 <- 10.2  # centered intercept SD
+m1 <- 3.5   # slope mean
+s1 <- 1     # slope SD
+l  <- 0.08  # sigma's exponential rate
 ```
+
+## 4. Fit the model
+
+```{r}
+
+model <- stan_glm(
+  flipper_length_mm ~ bill_length_mm, data = data,
+  family = gaussian,
+  prior_intercept = normal(m0, s0),
+  prior = normal(m1, s1),
+  prior_aux = exponential(l),
+  chains = 4, iter = 2000, seed = 84735
+)
+
+```
+
+```{r}
+model
+
+summary(model)
+
+plot_normal(1.7, 0.051)
+
+report::report(model)
+```
+
+```{r}
+
+posterior <- as.data.frame(model)
+beta0c_draws <- posterior$`(Intercept)` + posterior$bill_length_mm * mean(data$bill_length_mm)
+```
+
+<https://www.mdpi.com/2072-4292/13/14/2677>
+
+They compared their bleaching prediction ability using spatiotemporal Bayesian hierarchical models (analyze data that vary across both space and time, while accounting for uncertainty using probability) and sensitivity–specificity analyses.
 
 The `echo: false` option disables the printing of code (only output is displayed).
