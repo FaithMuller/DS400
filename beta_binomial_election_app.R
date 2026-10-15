@@ -32,7 +32,7 @@
 ## shape. Report alpha, beta, the resulting mean, and the 95% credible
 ## interval.
 ##
-## Your answer: α:115,β,:77.5
+## Your answer: α:221,β: 147, mean = 0.60, 95% CI = (0.55, 0.65)
 ##
 ##
 ##
@@ -43,8 +43,9 @@
 ## happens to the width of the 95% credible interval? In one sentence,
 ## explain why the mean doesn't move but the interval does.
 ##
-## Your answer: The more the numbers increases, the more thin the graphs gets. 
-##
+## Your answer: The mean stays the same .
+## The width of 95% credible interval shrinks, roughly half as wide. 
+## It doesn't move because it depends on the ratio of alpha to beta.
 ##
 ## ------------------------------------------------------------
 ## Q3 (Tab 1) -- Set alpha = beta = 1 (the flat prior). What are the
@@ -54,16 +55,20 @@
 ## point more plausible than any other?) versus why Beta(0.5, 0.5) has
 ## no single mode (hint: where does the density pile up?).
 ##
-## Your answer: Mode(π): this is what we get: no single mode when both α ≤ 1 and β ≤ 1 (density is bimodal, piling up at 0 and 1)
-## This means 
+## Your answer: For Beta(1,1), the mean is 0.5 and the SD is about 0.29.
+## There is no single mode because the density is flat, every value pi 
+## is plausible and no point is more likely than any other. For beta(0.5,0.5), 
+## the mean is also 0.5 and the SD is about 0.35. There's no single mode because
+## two places stand out, the two ends. 
 ##
 ## ------------------------------------------------------------
 ## Q4 (Tab 2) -- Set alpha = beta = 1, then n = 50, y = 30. Compare the
 ## Posterior curve to the Scaled Likelihood curve. What do you notice?
 ## Explain why this happens in terms of what a flat prior represents.
 ##
-## Your answer:
-##
+## Your answer: I noticed that the posterior and scale likelihood curves
+## are the same because a flat prior means every value of pi is equally
+## likely, so it has no effect. The posterior is just based on the data.
 ##
 ## ------------------------------------------------------------
 ## Q5 (Tab 2) -- Reset to the text's numbers (alpha=45, beta=55, n=50,
@@ -72,9 +77,11 @@
 ## shift? What does this tell you about what it takes for new data to
 ## overrule a moderately confident prior?
 ##
-## Your answer:
-##
-##
+## Your answer: The weights shift from the prior to the data. At n = 50,
+## the prior has 2/3 of the weight and the data has 1/3. While n = 500, the 
+## prior drops to 1/6 and the data rises to 5/6. 
+## It tells me that the data has to be much bigger than the prior to overrule it.
+## 
 ## ------------------------------------------------------------
 ## Q6 (Tab 2) -- Using the text's numbers (alpha=45, beta=55, n=50,
 ## y=30), check "Show frequentist 95% confidence interval." Compare the
@@ -82,8 +89,10 @@
 ## Bayesian credible interval says that the frequentist confidence
 ## interval cannot -- and why.
 ##
-## Your answer:
-##
+## Your answer: The Bayesian credible interval says that there's a 95%
+## chance Michelle's support is in that range. The frequentist interval
+## can't say that because it treats the true support as a fixed number
+## so its about the method, not interval.
 ##
 ## ------------------------------------------------------------
 ## Q7 (Tab 2) -- Set alpha = 90, beta = 10 (strong prior belief support
@@ -92,8 +101,10 @@
 ## closer to the prior or closer to the data? Does this match the
 ## weight sentence? Why did the data win here when it didn't in Q5?
 ##
-## Your answer:
-##
+## Your answer: The posterior ends up closer to the data then the prior.
+## It does match the weight sentence.
+## The data wins because the poll has 200 people while in Q5 had only 
+## 50 people. 
 ##
 ## ------------------------------------------------------------
 ## Q8 (Reflection -- no fixed answer) -- The app's posterior treats
@@ -105,8 +116,10 @@
 ## if you suspected support was genuinely trending upward, not just
 ## noisily varying around a fixed number.
 ##
-## Your answer:
-##
+## Your answer:It could be a real problem because support can change overtime
+## but the old prior still counts as much as new polls. I'd want it to give 
+## more weight to recent polls than older information.It should also
+## be able to let support change overtime. 
 ##
 ## ============================================================
 
