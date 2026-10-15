@@ -48,7 +48,7 @@ ggplotly(graph_2)
 
 ### What does the scatterplot say?
 
-- This graph shows that both x and y values are increasing and how strong their connects are.
+- This graph shows that both x and y values are increasing and how strong their connects are
 
 ## 3. Translate these three beliefs into priors
 
