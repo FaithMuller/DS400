@@ -55,6 +55,8 @@ Weight = prior (worth \~100 pseudo-voters) contributes 67% of the weight, and ou
 
 ## Your Turn
 
+#### Club Interest (pt 1)
+
 With your teammate, invent a use-case appropriate for the Beta Binomial Model. You do not need to find a dataset, just follow the kind of thinking from the text and example. Repeat the steps above describing in context your prior, likelihood, and posterior with statements and plots. Tips:
 
 - Come up with 3 -5 ideas on your own
@@ -81,58 +83,76 @@ Things to keep on mind:
 
 Set the scene...
 
-define π = probability that a person who attends the club's interest meeting goes on to become a member.
+- Faith wants to create Chaminade University's newest club: Fishing Club. To measure interest among the students, faith hosted 3 initial meetings. The meetings showed that about 20% of students expressed an interest in joining the club.
+
+define π
+
+π = Probability that a student who attends an interest meeting expresses genuine interest in joining the club
 
 ```{r}
-plot_beta(4,6)
+plot_beta(alpha = 4, beta = 16 )
 ```
 
-Statement = "Before any new data we believe there's a 95% chance π is between 14% and 70%, with 40% as our single best guess."
+Statement = "Before any new data we believe there's a 95% chance π is between 6% and 40%, with 20% as our single best guess."
 
-Prior effective sample size : alpha = 4, beta = 6
-
-4 + 6 = 10
+Prior effective sample size = 20
 
 ### Likelihood
 
-**New data arrives:** We commission new data of *n* = 18 and record *y* = 10, the number of interest-meeting attendees who signed up as members. We gather x data points in which 10 (55.6%) went on to join - noticeably higher/lower than the 40% prior average.
+**New data arrives:** We commission new data of *n or potential members who showed up to the new recruitment meeting* and record *y or members who showed interest in joining*. In the new meeting, we see a 80% expressed interest with 20 of the 25 potential members showing up to the recruitment meeting, compared to the previous meeting garnering only 20%.
 
 ```{r}
-plot_binomial_likelihood(y = 15, n = 20)
+plot_binomial_likelihood(y = 20 , n = 25)
 ```
 
-Likelihood Question: "For each possible value of π —probability that a person who attends the club's interest meeting goes on to become a member — how compatible is that value with having produced exactly 10 out of 18 in this data collection?"
+Likelihood Question: "For each possible value of π —probability a student expresses interest at a meeting— how compatible is that value with having produced exactly 20 out of 25 in this data collection?"
 
-Likelihood Statement: "Taken on its own, this data makes values of π near 50%-60% far more plausible than values near 30%-40% — the data alone points to a higher/lower number than we'd been expecting"
+Likelihood Statement: "Taken on its own, this poll makes values of π near 80% far more plausible than values near 20% — the data alone points to a higher number than we'd been expecting"
 
-### Posterior
+Posterior
 
 ```{r}
-plot_beta_binomial(alpha = 4, beta = 6, y = 10, n = 18)
+plot_beta_binomial(alpha = 4, beta = 16, y = 20, n = 25)
 ```
 
-Statement = "There's a 95% probability that π lies between 31.9% and 68.1%."
+Statement = "There's a 95% probability that π lies between 38.8% and 67.5%."
 
-Weight = prior (worth \~ ) contributes 36% of the weight, and our new data (n = 18) contributes the other 64%.
+Weight = prior (worth \~ 20 students at original meetings ) contributes 44% of the weight, and our new data (n = 25 students at newest orientation) contributes the other 56%.
 
-```         
-Prior:     Beta(4.0, 6.0)
-Data:      y = 10, n = 18
-Posterior: Beta(14.0, 14.0)
+# Club Conversion (pt. 2)
+
+Converting guests at introduction meetings is always a challenge. Conversion rates will always be significantly less than what the expressed interest rate. The average conversion rate of Chaminade students who express interest at these club meetings and go on to officially join is 25%.
+
+π = The probability that a student who expresses interest at a meeting goes on to actually join the club
+
+```{r}
+plot_beta(alpha = 4, beta = 12)
 ```
 
-##### **Prior**
+Statement = "Before any new data we believe there's a 95% chance π is between 8% and 48%, with 25% as our single best guess."
 
-Mean: 0.400
+Prior effective sample size = 16
 
-SD: 0.148
+### Likelihood
 
-##### **Data**
+**New data arrives:**
 
-10 successes / 18 trials (56%)
+Of the 30 students who expressed interest at the latest recruitment meeting, or n, we record *y*, the number who later joined the club. 20 of the 30 interested students (67%) actually joined, compared to our 25% prior average.
 
-##### **Posterior**
+```{r}
+plot_binomial_likelihood(y = 20, n = 30)
+```
 
-Mean: 0.500
+Likelihood Question: "For each possible value of π — the probability an interested student actually joins — how compatible is that value with having produced exactly 20 out of 30 in this data collection?"
 
-SD: 0.093
+Likelihood Statement: "Taken on its own, this data makes values of π near 67% far more plausible than values near 25% — the data alone points to a higher number than we'd been expecting."
+
+## Posterior
+
+```{r}
+plot_beta_binomial(alpha = 4, beta = 12, y = 20, n = 30)
+```
+
+Statement = "There's a 95% probability that π lies between 37.9% and 66.3%."
+
+Weight = prior (worth \~16 students) contributes 35% of the weight, and our new club meeting (n = 30 interested students) contributes the other 65%.
