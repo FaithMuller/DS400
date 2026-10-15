@@ -6,7 +6,7 @@ editor: visual
 
 ## Today's Lecture
 
-With the Waikiki Roughwater swim coming up, let's do a Bayesian analysis on some claude-generated swim data
+With the Waikiki Roughwater swim coming up, let's do a Bayesian analysis on some claude-generated swim data.
 
 ### Libraries
 
