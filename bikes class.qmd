@@ -1,0 +1,248 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+### Libraries
+
+```{r}
+library(bayesrules)
+library(tidyverse)
+library(ggpubr)
+library(plotly)
+library(report)
+```
+
+### Intro
+
+Welcome to today's lecture, we will analyze Capital Bikeshare Data from Washington D.C
+
+```{r}
+bikes_data <- bayesrules::bikes
+```
+
+Starter Questions:
+
+1.  What is the distribution of ridership? Make a histogram and write what you see below
+
+```{r}
+library(bayesrules)
+library(ggplot2)
+
+ggplot(bikes_data, aes(x = rides)) +
+  geom_histogram(color = "white", bins = 10) +
+  labs(title = "Distribution of Daily Bikeshare Ridership",
+       x = "Number of Rides per Day", y = "Number of Days")
+```
+
+This graph just shows that there's a lot of day-to-day variation in ridership, which tells me that something else (like weather or season) is influencing how many people ride bikes.
+
+2.  Has ridership increased over time? Make a plot and write what you see below
+
+```{r}
+ggplot(bikes_data, aes(x = date, y = rides)) +
+  geom_point() +
+  geom_smooth(se = FALSE, color = "blue") +
+  labs(title = "Ridership Over Time",
+       x = "Date", y = "Number of Rides")
+```
+
+This is graph shows that I was right with my assumption of the weather or season being a factor to the number of riders. As you could see, it rises during spring/summer and falls in winter (repeating across both years.
+
+3.  Are there more rides on weekdays or weekends? Make a plot and write what you see below
+
+```{r}
+
+library(plotly)
+
+bikes_summary <- bikes_data %>%
+  group_by(weekend) %>%
+  summarize(avg_rides = mean(rides))
+
+riders <- ggplot(bikes_summary, aes(x = weekend, y = avg_rides)) +
+  geom_col(fill = "steelblue") +
+  labs(title = "Average Ridership: Weekday vs. Weekend",
+       x = "Weekend?", y = "Average Number of Rides")
+
+ggplotly(riders, tooltip = "text")
+```
+
+4.  **Does temperature feel effect ridership**?
+
+```{r}
+ggplot(bikes_data, aes(x = temp_feel, y = rides)) +
+  geom_point()
+```
+
+```{r}
+ggplot(bikes_data, aes(x = temp_feel, y = rides)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_cor()
+  
+```
+
+What is a correlation coefficient and p value: [helpful tool here](https://rpsychologist.com/correlation/)
+
+R = 0.58 — the strength and direction of the pattern you're looking at
+
+- On the -1-to-1 scale, 0.58 sits in **moderate** territory: real and clearly visible in the scatter, but the cloud of points still has meaningful width around the line, not tightly hugging it the way an R of 0.9+ would.
+
+Squaring it tells you something more concrete about the plot: R² ≈ 0.34
+
+- About **34% of the vertical scatter in ridership** across this plot is explained by where a point sits on the x-axis (temperature). The remaining **66%** is everything else the plot doesn't capture
+
+p \< 2.2×10⁻¹⁶ — how confident you should be that this pattern is real, not a fluke of these particular 500 days
+
+- This tests rhe hypothesis that temperature and ridership have *no* linear relationship at all in the underlying population, and this pattern is just coincidental noise from sampling 500 particular days. The p-value says: **if that null hypothesis were actually true, seeing a correlation as strong as 0.58 in a sample this size would be astronomically unlikely**
+
+```{r}
+lm(data = bikes_data, rides~temp_feel)
+```
+
+**`(Intercept)` = -2179.27**: the model's predicted ridership when temp_feel = 0. As flagged before, this is a real number the formula produces, but not a practically meaningful one — 0°F essentially never happens in D.C., so this is just "where the line would cross the y-axis if you extended it that far," not a usable prediction.
+
+**`temp_feel` = 81.88**: the slope — for every one-unit (one degree) increase in temp_feel, the model predicts ridership increases by 81.88 rides. This is the number that actually answers "does temperature matter, and by how much"
+
+```{r}
+
+model <- lm(rides ~ temp_feel, data = bikes_data)
+report(model)
+```
+
+### Your turn
+
+Repeat the all the steps to model the relationship between
+
+rides and humidity
+
+```{r}
+ggplot(bikes_data, aes(x = humidity, y = rides)) +
+  geom_point()
+```
+
+```{r}
+ggplot(bikes_data, aes(x = humidity, y = rides)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_cor()
+```
+
+R = -0.069 — On the -1-to-1 scale, this is a very weak, negative relationship (basically close to zero)
+
+R² ≈ 0.005 — about 0.5% of the variation in ridership is explained by humidity. The other 99.5% is everything else.
+
+p = 0.122 — If p \< 0.05, we can’t rule out that it’s just noise. There isn't evidence that humidity has a real linear relationship with ridership.
+
+```{r}
+lm(data = bikes_data, rides~humidity)
+```
+
+**`(Intercept)` = 3933.722**: the predicted ridership when humidity = 0%. This isn’t practically meaningful, because D.C. basically never has 0% humidity.
+
+**`humidity` = -7.177**: for every 1-point increase in humidity, the model predicts ridership changes by 7.18 rides. That's a tiny effect since p = 0.122, it isn't statistically significant.
+
+```{r}
+model_humidity <- lm(rides ~ humidity, data = bikes_data)
+report(model_humidity)
+```
+
+- rides and windspeed
+
+```{r}
+ggplot(bikes_data, aes(x = windspeed, y = rides)) +
+  geom_point()
+```
+
+```{r}
+ggplot(bikes_data, aes(x = windspeed, y = rides)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_cor()
+```
+
+R = -0.19 — On the -1-to-1 scale, this is a weak, negative relationship. Fewer rides on windier days, yet points are still very spread out around the line.
+
+R² ≈ 0.036 — about 3.6% of the variation in ridership is explained by windspeed. The other 96.4% is everything else.
+
+p = 1.13e-05 — Since p \< 0.05, the relationship windspeed and ridership is statistically significant.
+
+```{r}
+lm(data = bikes_data, rides~windspeed)
+```
+
+**intercept = 4205.06**: On a day with no wind, the model predicts about 4,205 rides.
+
+**Windspeed = -55.52**: For every 1 mph more wind, there are about 56 fewer rides.
+
+```{r}
+model_wind <- lm(rides ~ windspeed, data = bikes_data)
+report(model_wind)
+```
+
+- rides and temp_actual
+
+```{r}
+ggplot(bikes_data, aes(x = temp_actual, y = rides)) +
+  geom_point()
+```
+
+```{r}
+ggplot(bikes_data, aes(x = temp_actual, y = rides)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_cor()
+```
+
+R = 0.58 — There’s a moderate, positive relationship.
+
+R² ≈ 0.34 — Temperature explains about **34%** of why ridership goes up and down. The other **66%** comes from other things.
+
+p = 2.2e- 16 — This is **less than 0.05**, so the pattern is **real.**
+
+```{r}
+lm(data = bikes_data, rides~temp_actual)
+```
+
+(intercept) = -2168.77 : At **0°F**, the model predicts about **-2,169 rides**.
+
+temp_actual = 89.23: For every **1 degree warmer**, there are about **89 more rides**.
+
+```{r}
+model_actual <- lm(rides ~ temp_actual, data = bikes_data)
+report(model_actual)
+```
+
+- temp_feel and temp_actual
+
+```{r}
+ggplot(bikes_data, aes(x = temp_actual, y = temp_feel)) +
+  geom_point()
+```
+
+```{r}
+ggplot(bikes_data, aes(x = temp_actual, y = temp_feel)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_cor()
+```
+
+R = 0.98 — There’s a very strong**, positive** relationship.
+
+R² ≈ 0.96 — Actual temperature explains about **96%** of why the feels-like temperature goes up and down. The other **4%** comes from other things, like humidity and wind.
+
+p = 2.2e- 16 — This is **less than 0.05**, so the pattern is **real.**
+
+```{r}
+lm(data = bikes_data, temp_feel~temp_actual)
+```
+
+(Intercept) = **0.6223**: When it’s **0°F outside**, the model says it **feels like about 0.6°F**. Basically the same.
+
+temp_actual = **1.082**: Every time it gets **1 degree warmer**, it **feels about 1 degree warmer** too.
+
+```{r}
+model_temps <- lm(temp_feel ~ temp_actual, data = bikes_data)
+report(model_temps)
+```
