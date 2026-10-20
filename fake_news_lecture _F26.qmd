@@ -403,3 +403,15 @@ subset_results %>%
 ```
 
 #### Your turn - Create a visual from subset_results
+
+```{r}
+ggplot(subset_results, aes(x = specificity, y = sensitivity, color = n_features)) +
+  geom_point(size = 2, alpha = 0.7) +
+  scale_color_viridis_c() +
+  labs(x = "Specificity (catching real)", y = "Sensitivity (catching fake)",
+       color = "# of features",
+       title = "Every feature combination: catching fake vs. catching real") +
+  theme_minimal()
+```
+
+Each dot represents one model. The higher models are better at catching fake news and models on the further right are better at catching real news. Models that catch more fake news usually catch less real news.
