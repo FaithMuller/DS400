@@ -1,23 +1,80 @@
 ---
-title: "conditional_probabilities_workshop"
+title: "Conditional Probability Workshop: Stroke Data"
 format: html
 editor: visual
 ---
 
-```{r}
+## Libraries
+
+```{r, message = FALSE}
 library(tidyverse)
 library(here)
-
 ```
 
-```{r}
+## Data
+
+```{r, message = FALSE}
 stroke_data <- read_csv(here("data/healthcare-dataset-stroke-data.csv"))
 ```
 
+**Question:** Does being male, having hypertension, or having heart disease change the chance of having a stroke?
+
+------------------------------------------------------------------------
+
+## Exploratory Data Analysis
+
+### 1. How many people had a stroke?
+
 ```{r}
-ggplot(data = stroke_data, aes(x = gender, fill = factor(stroke))) +
-  geom_bar(position = "dodge")
+ggplot(stroke_data, aes(x = factor(stroke))) +
+  geom_bar(fill = "steelblue") +
+  labs(title = "Stroke vs. No Stroke",
+       x = "Stroke (0 = no, 1 = yes)", y = "Number of people") +
+  theme_minimal()
 ```
+
+### 2. Stroke by gender
+
+```{r}
+ggplot(stroke_data, aes(x = gender, fill = factor(stroke))) +
+  geom_bar(position = "dodge") +
+  labs(title = "Stroke by Gender",
+       x = "Gender", y = "Number of people", fill = "Stroke") +
+  theme_minimal()
+```
+
+### 3. Stroke by hypertension
+
+```{r}
+ggplot(stroke_data, aes(x = factor(hypertension), fill = factor(stroke))) +
+  geom_bar(position = "dodge") +
+  labs(title = "Stroke by Hypertension",
+       x = "Hypertension (0 = no, 1 = yes)", y = "Number of people", fill = "Stroke") +
+  theme_minimal()
+```
+
+### 4. Stroke by heart disease
+
+```{r}
+ggplot(stroke_data, aes(x = factor(heart_disease), fill = factor(stroke))) +
+  geom_bar(position = "dodge") +
+  labs(title = "Stroke by Heart Disease",
+       x = "Heart disease (0 = no, 1 = yes)", y = "Number of people", fill = "Stroke") +
+  theme_minimal()
+```
+
+------------------------------------------------------------------------
+
+## Bayes' Theorem
+
+$$P(B \mid A) = \frac{P(A \mid B) \, P(B)}{P(A)}$$
+
+- **B** = had a stroke
+- **A** = the condition (male, hypertension, or heart disease)
+
+### P(B): chance anyone had a stroke
+
+This is the same for all three conditions, so we only find it once.
 
 ```{r}
 stroke_data %>% 
@@ -31,7 +88,63 @@ probability_disease <- stroke_data %>%
   mutate(percent = n / sum(n)) %>% 
   filter(stroke == 1) %>% 
   pull(percent)
+
+probability_disease
 ```
+
+About **4.9%** of all people in the data had a stroke.
+
+------------------------------------------------------------------------
+
+## 1. Being Male
+
+### P(A\|B): of people who had a stroke, how many are male?
+
+```{r}
+stroke_data %>% 
+  count(stroke, gender) %>% 
+  group_by(stroke) %>% 
+  mutate(percent = n / sum(n))
+```
+
+```{r}
+probability_male_given_stroke <- stroke_data %>% 
+  count(stroke, gender) %>% 
+  group_by(stroke) %>% 
+  mutate(percent = n / sum(n)) %>% 
+  filter(stroke == 1, gender == "Male") %>% 
+  pull(percent)
+```
+
+### P(A): chance anyone is male
+
+```{r}
+stroke_data %>% 
+  count(gender) %>% 
+  mutate(percent = n / sum(n))
+```
+
+```{r}
+probability_male <- stroke_data %>% 
+  count(gender) %>% 
+  mutate(percent = n / sum(n)) %>% 
+  filter(gender == "Male") %>% 
+  pull(percent)
+```
+
+### P(B\|A): chance of stroke if male
+
+```{r}
+(probability_male_given_stroke * probability_disease) / probability_male
+```
+
+**Answer:** If a person is male, there's about a 5.1% chance they had a stroke.
+
+------------------------------------------------------------------------
+
+## 2. Having Hypertension
+
+### P(A\|B): of people who had a stroke, how many have hypertension?
 
 ```{r}
 stroke_data %>% 
@@ -41,13 +154,15 @@ stroke_data %>%
 ```
 
 ```{r}
-probability_positive_result_given_disease <- stroke_data %>% 
+probability_hypertension_given_stroke <- stroke_data %>% 
   count(stroke, hypertension) %>% 
   group_by(stroke) %>% 
   mutate(percent = n / sum(n)) %>% 
-  filter(stroke == 1, hypertension == 1) %>%
+  filter(stroke == 1, hypertension == 1) %>% 
   pull(percent)
 ```
+
+### P(A): chance anyone has hypertension
 
 ```{r}
 stroke_data %>% 
@@ -56,15 +171,84 @@ stroke_data %>%
 ```
 
 ```{r}
-probability_positive_test_result <- stroke_data %>% 
+probability_hypertension <- stroke_data %>% 
   count(hypertension) %>% 
   mutate(percent = n / sum(n)) %>% 
   filter(hypertension == 1) %>% 
   pull(percent)
 ```
 
+### P(B\|A): chance of stroke if you have hypertension
+
 ```{r}
-(probability_positive_result_given_disease * probability_disease) / probability_positive_test_result
+(probability_hypertension_given_stroke * probability_disease) / probability_hypertension
 ```
 
-13.3%
+**Answer:** If a person has hypertension, there's about a **13.3%** chance they had a stroke. That's almost **3 times higher** than the 4.9% for everyone.
+
+------------------------------------------------------------------------
+
+## 3. Having Heart Disease
+
+### P(A\|B): of people who had a stroke, how many have heart disease?
+
+```{r}
+stroke_data %>% 
+  count(stroke, heart_disease) %>% 
+  group_by(stroke) %>% 
+  mutate(percent = n / sum(n))
+```
+
+```{r}
+probability_heart_given_stroke <- stroke_data %>% 
+  count(stroke, heart_disease) %>% 
+  group_by(stroke) %>% 
+  mutate(percent = n / sum(n)) %>% 
+  filter(stroke == 1, heart_disease == 1) %>% 
+  pull(percent)
+```
+
+### P(A): chance anyone has heart disease
+
+```{r}
+stroke_data %>% 
+  count(heart_disease) %>% 
+  mutate(percent = n / sum(n))
+```
+
+```{r}
+probability_heart <- stroke_data %>% 
+  count(heart_disease) %>% 
+  mutate(percent = n / sum(n)) %>% 
+  filter(heart_disease == 1) %>% 
+  pull(percent)
+```
+
+### P(B\|A): chance of stroke if you have heart disease
+
+```{r}
+(probability_heart_given_stroke * probability_disease) / probability_heart
+```
+
+**Answer:** If a person has heart disease, there's about a 17% chance they had a stroke.
+
+------------------------------------------------------------------------
+
+## Results
+
+| Condition     | Chance of stroke |
+|---------------|------------------|
+| Everyone      | 4.9%             |
+| Male          | 5.1%             |
+| Hypertension  | 13.3%            |
+| Heart disease | 17%              |
+
+People with heart disease raised the chance of stroke more than Hypertension. And being a male barely makes a difference.
+
+## Discussion
+
+**What question are we asking?** Out of people with a certain condition, how many had a stroke?
+
+This does **not** prove the condition *causes* strokes. It only shows they happen together more often.
+
+**Data quality:** This data comes from Kaggle, and we don't know exactly where it came from or how it was collected. We should be careful about trusting the results too much.
