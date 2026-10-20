@@ -632,14 +632,10 @@ shinyApp(ui, server)
 1.  22 to 178
 2.  The higher the s1 changes, the more the lines overlap.
 3.  I think seting l (sigma's rate) to 0.002, then to 0.0003 reflects a stronger belief that ridership is predicated by temp alone.
-4.  It peaks at zero because sigma is not allowed to take negative values
-5.  
-6.  **"P(beta1 \> 0 \| data)"** tells mea direct probability statement about the parameter itself, while a p-value would be contrast which answers a totally different answers.
-
-7\.
-
-8\.
-
-9\.
-
-10\.
+4.  It peaks at zero because sigma is not allowed to take non-negative values
+5.  With the help of Connor's answer set, I understood that the posterior almost exactly matching the prior.
+6.  **"P(beta1 \> 0 \| data)"** tells me direct probability statement about the parameter itself, while a p-value would be contrast which answers a totally different answers.
+7.  It would mean the chains haven't converged. Instead of agreeing on the same posterior, the separate simulations are sampling different values. And because of this, it makes the posterior results unreliable until the model is fixed. Our Rhat values are about 1.00, so our chains did converge.
+8.  \*\*mu's 95% credible interval: roughly 3840 to 4095, narrow, about 255 rides wide. Posterior predictive 95% interval: roughly 1499 to 6569, about 5070 rides wide, roughly 20x wider. It only reflects uncertainty about the average ridership at 75°F because it doesn't exactly know beta0 and beta1.
+9.  Yes, the lower bound dips well below zero. A normal distribution allows any real number and this is includings negative numbers, but ride counts can't be negative.
+10. The posterior intercept stayed close to the original -2,194. When m0 = 10,000, it came out as -2,188.36, almost the same. the prior wasn't confident: s0 = 1,000 means it could be off by about 1,000 rides. On the other hand, the data comes from 500 real days, which is a lot of evidence. The data controls the answer because it has much more weight than a prior guess.
