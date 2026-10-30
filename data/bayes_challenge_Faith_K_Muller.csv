@@ -1,0 +1,38 @@
+student,item,question,part,answer,correct,points,time
+Faith K Muller,q1m,1,Choose the model,Bayesian logistic regression,TRUE,1,2026-10-29 15:24
+Faith K Muller,q1a,1,Odds multiplier for 15 points,9.0263,FALSE,0,2026-10-29 15:24
+Faith K Muller,q1b,1,Odds vs probability,"A 15-point rise in humidity roughly doubles the probability of rain tomorrow, whatever the starting humidity was.",FALSE,0,2026-10-29 15:24
+Faith K Muller,q2m,2,Choose the model,Bayes' theorem,TRUE,1,2026-10-29 15:24
+Faith K Muller,q2a,2,Posterior with a 10% base rate,0.1,FALSE,0,2026-10-29 15:24
+Faith K Muller,q2b,2,Meaning of P(! | fake),An article has a 27% chance of being fake.,FALSE,0,2026-10-29 15:24
+Faith K Muller,q3m,3,Choose the model,BART (Bayesian additive regression trees),FALSE,0,2026-10-29 15:24
+Faith K Muller,q3a,3,Why the slopes disagree,The pooled model mixes differences between runners with changes within a runner. The hierarchical model compares each runner with themselves.,TRUE,1,2026-10-29 15:24
+Faith K Muller,q3b,3,Between vs within runners,"Neither standard deviation says anything about runners, because both describe the whole race rather than individuals.",FALSE,0,2026-10-29 15:24
+Faith K Muller,q4m,4,Choose the model,Beta-binomial model,TRUE,1,2026-10-29 15:24
+Faith K Muller,q4a,4,"Posterior mean with Beta(5, 11)",0.462,FALSE,0,2026-10-29 15:24
+Faith K Muller,q4b,4,A flat prior,"A Beta(1, 1) prior is flat and carries only about 2 pseudo-observations, so the data dominate.",TRUE,1,2026-10-29 15:24
+Faith K Muller,q5m,5,Choose the model,Bayesian linear regression,TRUE,1,2026-10-29 15:24
+Faith K Muller,q5a,5,Interpret the slope,The number of rides increases by about 82% for each additional degree of felt temperature.,FALSE,0,2026-10-29 15:24
+Faith K Muller,q5b,5,Interpret sigma,"The slope is uncertain by about 1,283 rides, so the effect of temperature cannot be pinned down precisely.",FALSE,0,2026-10-29 15:24
+Faith K Muller,q6m,6,Choose the model,Bayesian linear regression,FALSE,0,2026-10-29 15:24
+Faith K Muller,q6a,6,Accuracy with two predictors,0.953,TRUE,1,2026-10-29 15:24
+Faith K Muller,q6b,6,The 'naive' assumption,"Within each species, the predictors are treated as independent of each other.",TRUE,1,2026-10-29 15:24
+Faith K Muller,q7m,7,Choose the model,Hierarchical (multilevel) model,TRUE,1,2026-10-29 15:24
+Faith K Muller,q7a,7,Respond to a colleague,"The pooled model mixes patterns between genres and artists with the pattern within an artist. Comparing songs by the same artist, more playlists go with higher popularity.",TRUE,1,2026-10-29 15:24
+Faith K Muller,q7b,7,Causal claim,False,TRUE,1,2026-10-29 15:24
+Faith K Muller,q8a,8,Statement 1,Beta-binomial model,TRUE,1,2026-10-29 15:24
+Faith K Muller,q8b,8,Statement 2,Bayes' theorem,TRUE,1,2026-10-29 15:24
+Faith K Muller,q8c,8,Statement 3,Bayesian linear regression,TRUE,1,2026-10-29 15:24
+Faith K Muller,q8d,8,Statement 4,Bayesian logistic regression,TRUE,1,2026-10-29 15:24
+Faith K Muller,q8e,8,Statement 5,Naive Bayes classifier,TRUE,1,2026-10-29 15:24
+Faith K Muller,q8f,8,Statement 6,Hierarchical (multilevel) model,TRUE,1,2026-10-29 15:24
+Faith K Muller,q8g,8,Statement 7,BART (Bayesian additive regression trees),TRUE,1,2026-10-29 15:24
+Faith K Muller,q9a,9,p-value,True,FALSE,0,2026-10-29 15:24
+Faith K Muller,q9b,9,Credible interval,False,FALSE,0,2026-10-29 15:24
+Faith K Muller,q9c,9,Partial pooling,False,FALSE,0,2026-10-29 15:24
+Faith K Muller,q9d,9,Naive Bayes,True,TRUE,1,2026-10-29 15:24
+Faith K Muller,q9e,9,BART,False,TRUE,1,2026-10-29 15:24
+Faith K Muller,q9f,9,Few groups,True,FALSE,0,2026-10-29 15:24
+Faith K Muller,q10a,10,Prevention vs TH,"Prevention probably lowers reentry relative to TH, but the interval just includes zero, so the evidence is suggestive rather than conclusive.",TRUE,1,2026-10-29 15:24
+Faith K Muller,q10b,10,TH vs RRH,"The data can't separate TH from RRH on average. The interval is wide and centered near zero, so cost or subgroup effects should drive the choice.",TRUE,1,2026-10-29 15:24
+Faith K Muller,TOTAL,,,,NA,22,2026-10-29 15:25
