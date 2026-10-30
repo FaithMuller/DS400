@@ -34,7 +34,10 @@ spotify <- bayesrules::spotify
 1.  What is the popularity distribution in this data. Is this typical for all spotify songs?
 
 ```{r}
-
+ggplot(spotify, aes(x = popularity)) +
+  geom_histogram(
+    
+  )
 ```
 
 Lets frame it that you are a music agent and these are your clients, who tend to be fairly popular signed artists
@@ -42,25 +45,44 @@ Lets frame it that you are a music agent and these are your clients, who tend to
 2.  How many artists are represented in this data?
 
 ```{r}
+artist_count <- spotify |>
+  summarise(total_artists = n_distinct(artist))
 
+print(artist_count)
+
+spotify |>
+  distinct(artist)
 ```
 
 3.  what is the distribution of popularity for each artist?
 
 ```{r}
+ggplot(spotify, aes(x = popularity, fill = artist)) +
+  geom_histogram()
+```
+
+```{r}
+ggplot(spotify, aes(x = popularity, y = artist)) +
+  geom_boxplot() +
+  geom_jitter(size = 0.2)
 
 ```
 
-4.  is genre associated with popularity?
+4.  Is genre associated with popularity?
 
 ```{r}
-
+ggplot(spotify, aes(x = popularity, y = genre, fill = genre)) +
+  geom_boxplot() +
+  geom_jitter(size = 0.2)
 ```
 
 5.  is valence associated with popularity? (complete pooling)
 
 ```{r}
-
+ggplot(spotify, aes(x = valence, y = popularity)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_cor()
 ```
 
 6.  What does individual pooling look like?
@@ -89,7 +111,7 @@ spotify_valence_popularity_model <- stan_glmer(
 ```
 
 | Piece | What it does |
-|------------------------------------|------------------------------------|
+|----|----|
 | `stan_glmer(...)` | Fits a Bayesian multilevel (mixed-effects) regression with Stan, from the `rstanarm` package. |
 | `popularity ~ valence` | The fixed part: popularity changes linearly with valence, with one shared slope β₁ for all artists. |
 | `+ (1 | artist)` | The random intercept. Each artist gets their own baseline shift b₀ⱼ, drawn from a common distribution with SD σ₀. The `1` means intercept only. `(valence | artist)` would also give each artist their own valence slope. |
@@ -149,9 +171,18 @@ Your turn: Create the hierarchical model for n_playlists as a predictor, account
 - Keep priors & mcmc parameters the same as our previous model
 
 ```{r}
-
+spotify_paylist_popularity_model <- stan_glmer(
+  popularity ~ n_playlists + (1 | artist),
+  data = spotify, family = gaussian,
+  prior_intercept = normal(50, 2.5, autoscale = TRUE),
+  prior = normal(0, 2.5, autoscale = TRUE),
+  prior_aux = exponential(1, autoscale = TRUE),
+  prior_covariance = decov(reg = 1, conc = 1, shape = 1, scale = 1),
+  chains = 4, iter = 5000*2, seed = 84735)
 ```
 
 ```{r}
-
+tidy_summary_2 <- tidy(spotify_paylist_popularity_model, effects = "fixed",
+                       conf.int = TRUE, conf.level = 0.80)
+tidy_summary_2
 ```
